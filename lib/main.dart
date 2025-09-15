@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -25,8 +24,7 @@ class _WeatherTabsDemo extends StatefulWidget {
 class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
     with SingleTickerProviderStateMixin, RestorationMixin {
   late TabController _tabController;
-  final Random _random = Random();
-  final List<int> _temperatures = List.generate(7, (index) => Random().nextInt(51));
+  final TextEditingController _cityController = TextEditingController();
 
   final RestorableInt tabIndex = RestorableInt(0);
 
@@ -47,31 +45,25 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
       length: 7,
       vsync: this,
     );
-    _tabController.addListener(() {
-      setState(() {
-        tabIndex.value = _tabController.index;
-        // Generate new temperature when tab changes
-        _temperatures[_tabController.index] = _random.nextInt(51);
-      });
-    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _cityController.dispose();
     tabIndex.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          '7-Day Weather App',
+          '7-Day Weather Forecast',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -80,7 +72,7 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
         backgroundColor: Colors.blue[600],
         bottom: TabBar(
           controller: _tabController,
-          isScrollable: true,
+          // isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.blue[100],
@@ -93,14 +85,27 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
         controller: _tabController,
         children: [
           for (int i = 0; i < days.length; i++)
-            Center(
-              child: Text(
-                '${days[i]} - ${_temperatures[i]}°F',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.blue[800],
-                ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _cityController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter city name',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Fetch weather functionality will be added next
+                    },
+                    child: Text('Fetch Weather'),
+                  ),
+                ],
               ),
             ),
         ],
