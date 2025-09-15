@@ -1,41 +1,34 @@
 import 'package:flutter/material.dart';
 
-
 void main() {
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: DefaultTabController(
-        length: 3,
-        child: _TabsNonScrollableDemo(),
+        length: 7,
+        child: _WeatherTabsDemo(),
       ),
     );
   }
 }
 
-
-class _TabsNonScrollableDemo extends StatefulWidget {
+class _WeatherTabsDemo extends StatefulWidget {
   @override
-  __TabsNonScrollableDemoState createState() => __TabsNonScrollableDemoState();
+  _WeatherTabsDemoState createState() => _WeatherTabsDemoState();
 }
 
-
-class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
+class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
     with SingleTickerProviderStateMixin, RestorationMixin {
   late TabController _tabController;
 
-
   final RestorableInt tabIndex = RestorableInt(0);
 
-
   @override
-  String get restorationId => 'tab_non_scrollable_demo';
-
+  String get restorationId => 'weather_tabs_demo';
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
@@ -43,13 +36,12 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
     _tabController.index = tabIndex.value;
   }
 
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
       initialIndex: 0,
-      length: 3,
+      length: 7,
       vsync: this,
     );
     _tabController.addListener(() {
@@ -59,7 +51,6 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
     });
   }
 
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -67,39 +58,48 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-// For the To do task hint: consider defining the widget and name of the tabs here
-    final tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
-
+    final days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Tabs Demo',
+          '7-Day Weather App',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        backgroundColor: Colors.blue[600],
         bottom: TabBar(
           controller: _tabController,
-          isScrollable: false,
+          isScrollable: true,
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.blue[100],
           tabs: [
-            for (final tab in tabs) Tab(text: tab),
+            for (final day in days) Tab(text: day),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-// hint for the to do task:Considering creating the different for different tabs
-          for (final tab in tabs)
+          for (final day in days)
             Center(
-              child: Text(tab),
+              child: Text(
+                day,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.blue[800],
+                ),
+              ),
             ),
         ],
       ),
     );
   }
 }
-
-
