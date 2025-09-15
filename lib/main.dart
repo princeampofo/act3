@@ -99,6 +99,7 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
         backgroundColor: Colors.blue[600],
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.blue[100],
