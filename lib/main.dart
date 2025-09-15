@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -28,6 +29,12 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
 
   final RestorableInt tabIndex = RestorableInt(0);
 
+  // Add weather state variables
+  String? _currentCity;
+  int? _currentTemperature;
+  String? _currentWeather;
+  final Random _random = Random();
+
   @override
   String get restorationId => 'weather_tabs_demo';
 
@@ -55,6 +62,26 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
     super.dispose();
   }
 
+  // Add weather mapping function
+  String _getWeatherFromTemperature(int temperature) {
+    if (temperature <= 10) return 'Snowy';
+    if (temperature <= 20) return 'Rainy';
+    if (temperature <= 30) return 'Cloudy';
+    if (temperature <= 40) return 'Sunny';
+    return 'Hot';
+  }
+
+  // Add fetch weather function
+  void _fetchWeather() {
+    if (_cityController.text.isNotEmpty) {
+      setState(() {
+        _currentCity = _cityController.text;
+        _currentTemperature = _random.nextInt(51); // 0-50
+        _currentWeather = _getWeatherFromTemperature(_currentTemperature!);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -72,7 +99,6 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
         backgroundColor: Colors.blue[600],
         bottom: TabBar(
           controller: _tabController,
-          // isScrollable: true,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.blue[100],
@@ -100,11 +126,58 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
                   ),
                   SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: () {
-                      // Fetch weather functionality will be added next
-                    },
+                    onPressed: _fetchWeather,
                     child: Text('Fetch Weather'),
                   ),
+                  // Add weather display section
+                  if (_currentCity != null && _currentTemperature != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: Card(
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Text(
+                                days[i],
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[800],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                _currentCity!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                '$_currentTemperature°C',
+                                style: TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[700],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                _currentWeather!,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
