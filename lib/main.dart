@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -24,6 +25,8 @@ class _WeatherTabsDemo extends StatefulWidget {
 class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
     with SingleTickerProviderStateMixin, RestorationMixin {
   late TabController _tabController;
+  final Random _random = Random();
+  final List<int> _temperatures = List.generate(7, (index) => Random().nextInt(51));
 
   final RestorableInt tabIndex = RestorableInt(0);
 
@@ -47,6 +50,8 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
     _tabController.addListener(() {
       setState(() {
         tabIndex.value = _tabController.index;
+        // Generate new temperature when tab changes
+        _temperatures[_tabController.index] = _random.nextInt(51);
       });
     });
   }
@@ -87,10 +92,10 @@ class _WeatherTabsDemoState extends State<_WeatherTabsDemo>
       body: TabBarView(
         controller: _tabController,
         children: [
-          for (final day in days)
+          for (int i = 0; i < days.length; i++)
             Center(
               child: Text(
-                day,
+                '${days[i]} - ${_temperatures[i]}°F',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
